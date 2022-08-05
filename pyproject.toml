@@ -12,6 +12,7 @@ async-timeout = "^3.0.1"
 PyNaCl = "^1.4.0"
 python-dotenv = "^0.20.0"
 spotipy = "^2.20.0"
+lyrics-extractor = "^3.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

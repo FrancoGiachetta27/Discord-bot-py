@@ -5,6 +5,7 @@ from os.path import abspath, dirname
 
 from discord.ext import commands
 from dotenv import load_dotenv
+from lyrics_extractor import SongLyrics
 
 import utils
 from help_commands import HelpCommand
@@ -25,6 +26,10 @@ class Bot(commands.Cog):
         self.sp = BotSpotify(
             os.getenv("CLIENT_ID"),
             os.getenv("CLIENT_SECRET"),
+        )
+        self.lyrics = SongLyrics(
+            os.getenv("KEY_LYRICS"),
+            os.getenv("CLIENT_LYRICS"),
         )
 
     @commands.command(name="p")
