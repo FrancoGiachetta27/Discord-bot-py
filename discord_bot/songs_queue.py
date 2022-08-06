@@ -17,8 +17,9 @@ class Queue:
 
             await utils.send_message_single(
                 ctx,
-                {source.title},
+                source.title,
                 f"🎙️ Se ha añadido una cancion a la lista de reproduccion",
+                "Atencion!",
             )
 
             print(self.queues[id])
@@ -29,6 +30,7 @@ class Queue:
                 ctx,
                 source.title,
                 f"🎙️ Se ha añadido una cancion a la lista de reproduccion",
+                "Atencion!",
             )
 
             print(self.queues[id])
@@ -65,7 +67,7 @@ class Queue:
             )
         else:
             await utils.send_message_single(
-                ctx, f"🛑 No hay mas canciones para reproducir", "❌ Error:"
+                ctx, f"🛑 No hay mas canciones para reproducir", "❌ Error:", "Atencion!"
             )
 
     async def get_queue(self, ctx, id):
@@ -73,19 +75,20 @@ class Queue:
             queue = []
 
             if len(self.queues[id]) != 0:
-                for song in self.queues[id]:
-                    queue.append(song.title)
+                for i, song in enumerate(self.queues[id]):
+                    queue.append([i, song.title])
 
                 return queue
-            else:
-                await utils.send_message_single(
-                    ctx, f"🛑 No hay canciones en la lista", "❌ Error:"
-                )
+
+            await utils.send_message_single(
+                ctx, f"🛑 No hay canciones en la lista", "❌ Error:", "Atencion!"
+            )
         else:
             await utils.send_message_single(
                 ctx,
                 f"🛑 La lista aun no ha sido creada, reproduce una cancion primero",
                 "❌ Error:",
+                "Atencion!",
             )
 
     async def skip_song(self, ctx, voice_client, id):
@@ -97,5 +100,5 @@ class Queue:
             return next_song
         else:
             await utils.send_message_single(
-                ctx, f"🛑 No hay mas canciones para reproducir", "❌ Error:"
+                ctx, f"🛑 No hay mas canciones para reproducir", "❌ Error:", "Atencion!"
             )

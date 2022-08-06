@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from music_bot import Bot, bot_setup
 
 if __name__ == "__main__":
-    path = os.path.abspath("../.env")
+    path = os.path.abspath(".\.env")
 
     load_dotenv(path)
 

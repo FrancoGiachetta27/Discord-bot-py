@@ -18,7 +18,7 @@ class Song:
                 color=discord.Colour.random(),
             )
             .add_field(name="Solicitado por: ", value=f"{self.requester}", inline=True)
-            .add_field(name="Duracion ", value=f"{self.source.duration}", inline=True)
+            .add_field(name="Duracion: ", value=f"{self.source.duration}", inline=True)
             .set_thumbnail(url=self.source.thumbnail)
         )
 

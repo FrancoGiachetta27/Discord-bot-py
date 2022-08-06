@@ -1,11 +1,11 @@
 import asyncio
 import os
+import os.path
 import time
-from os.path import abspath, dirname
 
+import aiohttp
 from discord.ext import commands
 from dotenv import load_dotenv
-from lyrics_extractor import SongLyrics
 
 import utils
 from help_commands import HelpCommand
@@ -17,7 +17,7 @@ from youtube import YouTube
 
 class Bot(commands.Cog):
     def __init__(self, bot):
-        path = f"{dirname(abspath(__file__))}/.env"
+        path = os.path.abspath(".\.env")
 
         load_dotenv(path)
 
@@ -26,10 +26,6 @@ class Bot(commands.Cog):
         self.sp = BotSpotify(
             os.getenv("CLIENT_ID"),
             os.getenv("CLIENT_SECRET"),
-        )
-        self.lyrics = SongLyrics(
-            os.getenv("KEY_LYRICS"),
-            os.getenv("CLIENT_LYRICS"),
         )
 
     @commands.command(name="p")
@@ -68,7 +64,7 @@ class Bot(commands.Cog):
             ctx.voice_client.stop()
         else:
             await utils.send_message_single(
-                ctx, "Ninguna cancion se esta reproduciendo", "❌ Error:"
+                ctx, "Ninguna cancion se esta reproduciendo", "❌ Error:", "Atencion!"
             )
 
     @commands.command()
@@ -81,7 +77,7 @@ class Bot(commands.Cog):
             ctx.voice_client.pause()
         else:
             await utils.send_message_single(
-                ctx, "Ninguna cancion se esta reproduciendo", "❌ Error:"
+                ctx, "Ninguna cancion se esta reproduciendo", "❌ Error:", "Atencion!"
             )
 
     @commands.command()
@@ -94,21 +90,28 @@ class Bot(commands.Cog):
             ctx.voice_client.resume()
         elif voice_client.is_playing():
             await utils.send_message_single(
-                ctx, "La cancion ya esta en reproduccion", "❌ Error:"
+                ctx, "La cancion ya esta en reproduccion", "❌ Error:", "Atencion!"
             )
         else:
             await utils.send_message_single(
-                ctx, "Ninguna cancion se esta reproduciendo", "❌ Error:"
+                ctx, "Ninguna cancion se esta reproduciendo", "❌ Error:", "Atencion!"
             )
 
     @commands.command()
-    async def skip(self, ctx):
+    async def skip(self, ctx, *, query=""):
         guild_id = ctx.message.guild.id
         voice_client = ctx.voice_client
 
         await self.ensure_voice(ctx)
 
-        if voice_client.is_playing():
+        if query:
+            await utils.send_message_single(
+                ctx,
+                "Ese comando no es correcto",
+                "❌ Error:",
+                "Atencion!",
+            )
+        elif voice_client.is_playing():
             try:
                 source = await self.queue_.skip_song(ctx, voice_client, guild_id)
 
@@ -124,17 +127,18 @@ class Bot(commands.Cog):
                     if e
                     else print(f"Player error: {e}"),
                 )
-            except Exception as E:
+            except Exception(commands.CommandError) as e:
                 await utils.send_message_single(
                     ctx,
                     "Error al obtener la siguiente canción",
                     "❌ Error:",
+                    "Atencion!",
                 )
 
-                print(E)
+                print(e)
         else:
             await utils.send_message_single(
-                ctx, "Ninguna cancion se esta reproduciendo", "❌ Error"
+                ctx, "Ninguna cancion se esta reproduciendo", "❌ Error", "Atencion!"
             )
 
     @commands.command()
@@ -162,9 +166,12 @@ class Bot(commands.Cog):
     @commands.command()
     async def queue(self, ctx):
         guild_id = ctx.message.guild.id
-        queue = await self.queue_.get_queue(guild_id, ctx)
+        queue = await self.queue_.get_queue(
+            ctx,
+            guild_id,
+        )
 
-        await utils.send_message_multiple(ctx, guild_id)
+        await utils.send_message_multiple(ctx, queue, "Atencion!")
 
     # @commands.command()
     # async def loop(self, ctx):
@@ -173,6 +180,13 @@ class Bot(commands.Cog):
     # @commands.command()
     # async def endloop(self, ctx):
     #     pass
+
+    # @commands.command()
+    # async def lyrics(self, ctx):
+    #     voice_client = ctx.voice_client
+    #     song_name = voice_client.source.title
+
+    #     async with ctx.typing():
 
     @play.before_invoke
     @playlist.before_invoke
@@ -188,7 +202,7 @@ class Bot(commands.Cog):
                 await ctx.author.voice.channel.connect()
             else:
                 await utils.send_message_single(
-                    ctx, "No estas conectado a ningun canal", "❌ Error:"
+                    ctx, "No estas conectado a ningun canal", "❌ Error:", "Atencion!"
                 )
 
                 raise commands.CommandError("Author not connected to a voice channel.")

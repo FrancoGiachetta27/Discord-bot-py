@@ -94,12 +94,12 @@ class YouTube(discord.PCMVolumeTransformer):
 
         duration: list = []
         if days > 0:
-            duration.append("{} days".format(days))
+            duration.append("{} dias".format(days))
         if hours > 0:
-            duration.append("{} hours".format(hours))
+            duration.append("{} horas".format(hours))
         if minutes > 0:
-            duration.append("{} minutes".format(minutes))
+            duration.append("{} minutos".format(minutes))
         if seconds > 0:
-            duration.append("{} seconds".format(seconds))
+            duration.append("{} segundos".format(seconds))
 
         return ", ".join(duration)

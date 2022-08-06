@@ -18,12 +18,11 @@ class HelpCommand(commands.HelpCommand):
             # "config": " 💻  entrar en la configuracion del bot",
             "playlist": " ⏯️  reproducir una playlist de spotify",
             # "seek numero -s/-m": " 🔍  saltar a un segundo/minuto deseado",
-            # "lyrics": " 📜  obtener la letra de la cancion que se esta reproducioendo",
+            "lyrics": " 📜  obtener la letra de la cancion que se esta reproducioendo",
         }
 
     # sends general help
     async def send_bot_help(self, mapping):
-        new = "\n"
         embed = discord.Embed(
             title="Atencion!",
             description="```css\nComandos\n```",
